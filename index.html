@@ -15,9 +15,7 @@
     </div>
 
     <div class="rsl-video">
-      <!-- To embed a video, replace the play button below with:
-           <iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen></iframe> -->
-      <div class="rsl-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></div>
+      <iframe src="https://player.vimeo.com/video/1210781917?byline=0&amp;portrait=0&amp;title=0" title="4sight video" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
     </div>
 
     <div class="rsl-pad">
@@ -65,7 +63,7 @@
         <div class="rsl-fd">Technology and data that deliver measurable business impact.</div>
       </div>
       <div class="rsl-feat">
-        <div class="rsl-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11l4-1 4 3 2-1 5 3M14 12l3-3 4 2M8 10l-4 4M13 16l-2 2"/></svg></div>
+        <div class="rsl-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg></div>
         <div class="rsl-divider"></div>
         <div class="rsl-ft">Trusted<br>partner</div>
         <div class="rsl-fd">Reliable, secure and committed to your long-term success.</div>
@@ -92,11 +90,11 @@
         <h2 class="rsl-title">Get more info <span>FREE</span></h2>
         <p class="rsl-sub2">Leave your details and we'll get in touch on WhatsApp.</p>
 
-        <label class="rsl-flabel" for="rsl4sight-name">Name</label>
-        <input class="rsl-input" type="text" id="rsl4sight-name" placeholder="Your full name" autocomplete="name" />
-
         <label class="rsl-flabel" for="rsl4sight-number">Mobile number</label>
         <input class="rsl-input" type="tel" id="rsl4sight-number" placeholder="e.g. 082 123 4567" autocomplete="tel" inputmode="numeric" />
+
+        <label class="rsl-flabel" for="rsl4sight-name">Name</label>
+        <input class="rsl-input" type="text" id="rsl4sight-name" placeholder="Your full name" autocomplete="name" />
 
         <button type="button" class="rsl-btn rsl-submit">Submit</button>
         <p class="rsl-msg" role="status" aria-live="polite"></p>
@@ -209,7 +207,11 @@
   (function () {
     var root = document.getElementById('rsl4sight');
     if (!root) return;
-    var ENDPOINT  = 'https://test.wa.meta.systems.xfour.co.za/api/message';
+    /* ===== 4EDGE SETTINGS - WHEN YOU GO LIVE, CHANGE THESE TWO LINES ONLY =====
+       1. ENDPOINT  -> swap to the confirmed PRODUCTION url (ask 4edge - the email one still said 'test')
+       2. CUSTOMER_ID -> change '106' (test) to '81' (production)                              */
+    var ENDPOINT    = 'https://test.wa.meta.systems.xfour.co.za/api/send_marketing/v1';
+    var CUSTOMER_ID = '106';   // '106' = TEST  |  '81' = PRODUCTION
     var nameInput = document.getElementById('rsl4sight-name');
     var numInput  = document.getElementById('rsl4sight-number');
     var sendBtn   = root.querySelector('.rsl-submit');
@@ -241,7 +243,11 @@
       sendBtn.disabled=true; var original=sendBtn.textContent; sendBtn.textContent='Sending\u2026'; clearMessage();
       try{
         var res=await fetch(ENDPOINT,{ method:'POST', headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({ name:name, mobile:'+27'+national, from:'whatsapp: demo~+27'+national }) });
+          body:JSON.stringify({
+            prospect_mobile_number: '+27'+national,
+            prospect_name: name,
+            prospect_customer_id: CUSTOMER_ID
+          }) });
         if(res.ok){ window.location.hash=doneHash; nameInput.value=''; numInput.value='';
           nameInput.classList.remove('is-valid','is-invalid'); numInput.classList.remove('is-valid','is-invalid'); }
         else { setMessage('The service returned an error. Please try again.','error'); }
